@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TopicSchema implements Schema {
 
@@ -39,7 +38,7 @@ public class TopicSchema implements Schema {
                     while (receiverIterator.hasNext()) {
                         Receiver receiver = receiverIterator.next();
                         var queueIterator = queue.iterator();
-                        while(queueIterator.hasNext()) {
+                        while (queueIterator.hasNext()) {
                             String data = queueIterator.next();
                             if (data != null) {
                                 receiver.receive(data);
