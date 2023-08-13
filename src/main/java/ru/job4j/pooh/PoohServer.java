@@ -46,12 +46,7 @@ public class PoohServer {
                                     );
                                 }
                             }
-                            if (action.equals("queue")) {
-                                queueSchema.publish(new Message(name, text));
-                            }
-                            if (action.equals("topic")) {
-                                topicSchema.publish(new Message(name, text));
-                            }
+                            (action.equals("queue") ? queueSchema : topicSchema).publish(new Message(name, text));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
