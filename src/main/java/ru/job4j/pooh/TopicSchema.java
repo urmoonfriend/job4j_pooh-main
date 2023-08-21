@@ -34,7 +34,6 @@ public class TopicSchema implements Schema {
                     var queue = data.getOrDefault(queueKey, new LinkedBlockingQueue<>());
                     var receiversByQueue = receivers.get(queueKey);
                     var receiverIterator = receiversByQueue.iterator();
-                    AtomicBoolean nextReceiverFlag = new AtomicBoolean(false);
                     while (receiverIterator.hasNext()) {
                         Receiver receiver = receiverIterator.next();
                         var queueIterator = queue.iterator();
@@ -43,14 +42,6 @@ public class TopicSchema implements Schema {
                             if (data != null) {
                                 receiver.receive(data);
                             }
-                            if (data == null) {
-                                nextReceiverFlag.set(true);
-                                break;
-                            }
-                        }
-                        if (nextReceiverFlag.get()) {
-                            nextReceiverFlag.set(false);
-                            break;
                         }
                         if (!receiverIterator.hasNext()) {
                             receiverIterator = receiversByQueue.iterator();

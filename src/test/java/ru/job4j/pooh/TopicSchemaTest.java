@@ -61,21 +61,29 @@ class TopicSchemaTest {
     public void whenMultiReceivers() throws InterruptedException {
         var topic = new TopicSchema();
         var outFirst = new CopyOnWriteArrayList<String>();
-        var countFirst = new CountDownLatch(2);
+        var countFirst = new CountDownLatch(3);
         topic.addReceiver(new TextReceiver(countFirst, "weather", outFirst));
         var outSecond = new CopyOnWriteArrayList<String>();
-        var countSecond = new CountDownLatch(2);
+        var countSecond = new CountDownLatch(3);
         topic.addReceiver(new TextReceiver(countSecond, "weather", outSecond));
+        var outThird = new CopyOnWriteArrayList<String>();
+        var countThird = new CountDownLatch(3);
+        topic.addReceiver(new TextReceiver(countThird, "weather", outThird));
         topic.publish(new Message("weather", "23"));
         topic.publish(new Message("weather", "20"));
+        topic.publish(new Message("weather", "new1"));
+        topic.publish(new Message("weather", "new2"));
+        topic.publish(new Message("weather", "new3"));
         topic.publish(new Message("city", "11"));
         var thread = new Thread(topic);
         thread.start();
         countFirst.await();
         countSecond.await();
+        countThird.await();
         thread.interrupt();
-        assertThat(outFirst).containsOnly("23", "20");
-        assertThat(outSecond).containsOnly("23", "20");
+        assertThat(outFirst).containsOnly("23", "20", "new1", "new2", "new3");
+        assertThat(outSecond).containsOnly("23", "20", "new1", "new2", "new3");
+        assertThat(outThird).containsOnly("23", "20", "new1", "new2", "new3");
     }
 
 }
